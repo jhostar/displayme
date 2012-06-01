@@ -1,0 +1,45 @@
+<html>
+<head>
+	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+	<script type="text/javascript">
+	function cleanText(txt) {
+		var txtarr = txt.match(/([a-zA-Z0-9!#$%&'()*\+,-.\/:;<>=?@\[\]^_` ]+)/g);
+		if (txtarr === null) {
+			return "";
+		} 
+		else {
+			return txtarr.join("");
+		};
+	}
+
+
+	$(document).ready(function() {
+		$("#txt").keyup(function() {
+			var txt = $("#txt").val();
+			$("#txt").val(cleanText(txt));
+			var rem = 31 - cleanText($("#txt").val()).length;
+			$("#counter").text(rem + "");
+		});
+
+		$("#btn_send").click(function() {
+			$.getJSON("/send", {msg: $("#txt").val()}, function(json) {
+				if (json.sent) {
+					$("#sent").text("Sent!");
+					$("#txt").val("");
+				}
+				else $("#sent").text("Not sent!");
+			});
+		});
+
+		$("#btn_led").click(function() {
+			$.getJSON("/send", {msg: '`'}, function(json) {});
+			});
+		});
+
+	</script>
+</head>
+<body>
+	<textarea id="txt"></textarea>
+	<p><span id="counter">31</span> <span id="sent"></span> <button id="btn_send">Send</button> <button id="btn_led">LED</button></p>
+</body>
+</html>
